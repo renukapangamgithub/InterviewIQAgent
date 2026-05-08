@@ -1,16 +1,25 @@
 import React from "react";
 import { BsRobot } from "react-icons/bs";
 import { IoSparklesSharp } from "react-icons/io5";
-import { motion } from "motion/react";
+import { motion, warning } from "motion/react";
 import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../utils/firebase";
+import { serverURL } from "../App";
+import { googleAuthService } from "../services/apiService.js";
 
 const Auth = () => {
   const handelGoogleAuth = async () => {
     try {
       const response = await signInWithPopup(auth, provider);
-      console.log(response);
+      let User = response.user;
+      const payload = {
+        name: User.displayName,
+        email: User.email,
+      };
+
+      const result = await googleAuthService(payload);
+      console.log(result.data);
     } catch (error) {
       console.log(error);
     }
