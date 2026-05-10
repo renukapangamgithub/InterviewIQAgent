@@ -7,8 +7,11 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../utils/firebase";
 import { serverURL } from "../App";
 import { googleAuthService } from "../services/apiService.js";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice.js";
 
 const Auth = () => {
+  const dispatch = useDispatch;
   const handelGoogleAuth = async () => {
     try {
       const response = await signInWithPopup(auth, provider);
@@ -19,9 +22,10 @@ const Auth = () => {
       };
 
       const result = await googleAuthService(payload);
-      console.log(result.data);
+      dispatch(setUserData(result.data));
     } catch (error) {
       console.log(error);
+      dispatch(setUserData(null));
     }
   };
 

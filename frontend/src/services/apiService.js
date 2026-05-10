@@ -6,3 +6,9 @@ export async function googleAuthService(userData) {
     withCredentials: true,
   });
 }
+
+export async function googleLogout() {
+  return await axios.get(`${serverURL}/api/auth/logout`,{
+    withCredentials:true
+  })
+}
