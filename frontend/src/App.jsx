@@ -10,7 +10,7 @@ import InterviewPage from "./pages/InterviewPage";
 import InterviewHistory from "./pages/InterviewHistory";
 import Pricing from "./pages/Pricing.jsx";
 import InterviewReport from "./pages/InterviewReport";
-export const serverURL = "http://localhost:8000";
+export const serverURL = "https://interviewiqagent-1.onrender.com";
 
 const App = () => {
   const dispatch = useDispatch();
