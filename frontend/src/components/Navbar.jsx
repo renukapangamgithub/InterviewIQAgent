@@ -7,29 +7,29 @@ import { MdLogout } from "react-icons/md";
 import { Await, useNavigate } from "react-router-dom";
 import { setUserData } from "../redux/userSlice.js";
 import { googleLogout } from "../services/apiService.js";
-
+import AuthModel from "./AuthModel.jsx";
 
 const Navbar = () => {
   const { userData } = useSelector((state) => state.user);
   const [showCreditPopup, setShowCreditPopup] = useState(false);
   const [showUserPopup, setShowUserPopup] = useState(false);
   const navigate = useNavigate();
-   const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [showAuth, setShowAuth] = useState(false);
 
-
-  const handleLogout = async ()=>{
+  const handleLogout = async () => {
     try {
-      await googleLogout()
-      dispatch(setUserData(null))
-      setShowCreditPopup(false)
-      setShowUserPopup(false)
-      navigate("/")
+      await googleLogout();
+      dispatch(setUserData(null));
+      setShowCreditPopup(false);
+      setShowUserPopup(false);
+      setShowAuth(true)
+      navigate("/");
     } catch (error) {
-      
+      console.log(error);
     }
-  }
+  };
 
-  
   return (
     <div className="bg-[#f3f3f3] flex justify-center px-4 pt-6">
       <motion.div
@@ -50,8 +50,12 @@ const Navbar = () => {
         {/* Right Side */}
         <div className="flex items-center gap-5 relative">
           <div className="relative">
-            <butoon
+            <button
               onClick={() => {
+                if (!userData) {
+                  setShowAuth(true);
+                  return;
+                }
                 setShowCreditPopup(!showCreditPopup);
                 setShowUserPopup(false);
               }}
@@ -59,7 +63,7 @@ const Navbar = () => {
             >
               <RiCoinFill className="text-yellow-500" size={20} />
               {userData?.credits || 0}
-            </butoon>
+            </button>
             {showCreditPopup && (
               <div className="absolute right-[-50px] mt-3 w-64 bg-white shadow-xl border border-gray-200 rounded p-5 z-50">
                 <p className="text-sm text-gray-600 mb-4">
@@ -77,8 +81,12 @@ const Navbar = () => {
             )}
           </div>
           <div className="relative">
-            <butoon
+            <button
               onClick={() => {
+                if (!userData) {
+                  setShowAuth(true);
+                  return;
+                }
                 setShowUserPopup(!showUserPopup);
                 setShowCreditPopup(false);
               }}
@@ -89,7 +97,7 @@ const Navbar = () => {
               ) : (
                 <FaUserCircle size={16} />
               )}
-            </butoon>
+            </button>
             {showUserPopup && (
               <div className="absolute right-0 mt-3 w-64 bg-white border border-gray-200 rounded-2xl shadow-xl p-5 z-50">
                 <p className="text-left px-4  text-blue-600 font-semibold mb-3 capitalize">
@@ -103,9 +111,10 @@ const Navbar = () => {
                   Interview History
                 </button>
 
-                <button 
-                onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-red-500 hover:bg-red-50 transition-all duration-200">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-red-500 hover:bg-red-50 transition-all duration-200"
+                >
                   <MdLogout size={16} />
                   Logout
                 </button>
@@ -114,6 +123,7 @@ const Navbar = () => {
           </div>
         </div>
       </motion.div>
+      {showAuth && <AuthModel onClose={()=>setShowAuth(false)} />}
     </div>
   );
 };
